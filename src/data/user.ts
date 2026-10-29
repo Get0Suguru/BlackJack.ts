@@ -26,4 +26,12 @@ export const user: { name: string | null ,
   deck: [],
 }
 
-
+export const resetCards = (): void => {
+  user.cards.player.hand = [];
+  user.cards.player.aceCount = 0;
+  user.cards.player.score = 0;
+  user.cards.dealer.hand = [];
+  user.cards.dealer.aceCount = 0;
+  user.cards.dealer.score = 0;
+  user.deck = [];
+};

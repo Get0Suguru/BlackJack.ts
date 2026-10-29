@@ -29,7 +29,8 @@ export function dealCards(): void {
   let con = 4;
   while (con > 0) {
     const card = getRandomCard()!;
-    const cardVal = parseInt(card.charAt(0)); // at this point its either no or face card
+    let cardVal = Number.parseInt(card, 10);
+    if(Number.isNaN(cardVal)) cardVal = 10;
 
     if (con % 2 === 0) {
       // even -> player
@@ -56,4 +57,37 @@ export function dealCards(): void {
     }
     con--;
   }
+}
+
+// logic for hit & score resolver for 'A'
+export function hit<T extends keyof typeof user.cards>(
+  participant: T,
+): number {
+  const card = getRandomCard();
+  if (!card) {
+    throw new Error("Cannot draw a card: the deck is empty.");
+  }
+
+  const hand = user.cards[participant];
+  const cardValue = Number.parseInt(card, 10);
+  hand.hand.push(card);
+
+  if (card.startsWith("A")) {
+    hand.aceCount++;
+    hand.score += 11;
+  } else {
+    hand.score += cardValue || 10;
+  }
+
+  while (hand.score > 21 && hand.aceCount > 0) {
+    hand.score -= 10;
+    hand.aceCount--;
+  }
+
+  return hand.score;
+}
+
+// logic for stand
+export function stand(): number {
+  return user.cards.player.score;
 }
